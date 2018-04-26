@@ -22,11 +22,10 @@ import           Network.HTTP.Types.Status  (Status, mkStatus, status200,
                                              status409, status410, status411,
                                              status412, status413, status414,
                                              status415, status416, status417,
-                                             status422, status426, status428,
-                                             status428, status429, status431,
-                                             status500, status501, status502,
-                                             status503, status504, status505,
-                                             status511)
+                                             status422, status428, status429,
+                                             status431, status500, status501,
+                                             status502, status503, status504,
+                                             status505, status511)
 import           Network.Wai                (Request, rawPathInfo,
                                              rawQueryString, requestBody,
                                              requestHeaders, responseLBS)
@@ -91,7 +90,6 @@ exitCodeToHttp (ExitFailure 15) = status415
 exitCodeToHttp (ExitFailure 16) = status416
 exitCodeToHttp (ExitFailure 17) = status417
 exitCodeToHttp (ExitFailure 22) = status422
-exitCodeToHttp (ExitFailure 26) = status426
 exitCodeToHttp (ExitFailure 28) = status428
 exitCodeToHttp (ExitFailure 29) = status429
 exitCodeToHttp (ExitFailure 31) = status431
