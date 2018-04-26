@@ -7,6 +7,7 @@ import qualified Data.ByteString            as BS
 import qualified Data.ByteString.Char8      as BS8
 import qualified Data.ByteString.Lazy.Char8 as BSL8
 import           Data.CaseInsensitive       (original)
+import           Data.Foldable              (fold)
 import           Data.Function              (($), (.))
 import           Data.Functor               ((<$>))
 import           Data.Int                   (Int)
@@ -26,7 +27,8 @@ import           Network.HTTP.Types.Status  (Status, mkStatus, status200,
                                              status500, status501, status502,
                                              status503, status504, status505,
                                              status511)
-import           Network.Wai                (Request, requestBody,
+import           Network.Wai                (Request, rawPathInfo,
+                                             rawQueryString, requestBody,
                                              requestHeaders, responseLBS)
 import           Network.Wai.Handler.Warp   (run)
 import           Options.Applicative        (Parser, auto, execParser, fullDesc,
@@ -36,7 +38,8 @@ import           Options.Applicative        (Parser, auto, execParser, fullDesc,
 import           Prelude                    ()
 import           System.Exit                (ExitCode (..))
 import           System.IO                  (IO, stderr)
-import           System.Process             (StdStream (CreatePipe),
+import           System.Process             (CreateProcess,
+                                             StdStream (CreatePipe),
                                              createProcess, proc, std_err,
                                              std_in, std_out, waitForProcess)
 
@@ -102,6 +105,10 @@ exitCodeToHttp (ExitFailure 55) = status505
 exitCodeToHttp (ExitFailure 56) = status511
 exitCodeToHttp (ExitFailure v)  = mkStatus v mempty
 
+tailSafe :: [a] -> Maybe [a]
+tailSafe []     = Nothing
+tailSafe (_:xs) = Just xs
+
 main :: IO ()
 main = do
   settings <- parseSettings
@@ -116,7 +123,14 @@ main = do
         BS8.putStrLn output
         respond (responseLBS status200 mempty mempty)
       Just handler -> do
-        let processParams = (proc handler []){
+        let pathInfo :: String
+            pathInfo = BS8.unpack (rawPathInfo request)
+            queryString :: String
+            queryString = fold . tailSafe . BS8.unpack . rawQueryString $ request
+            processArgs :: [String]
+            processArgs = [pathInfo, queryString]
+            processParams :: CreateProcess
+            processParams = (proc handler processArgs){
               std_out = CreatePipe,
               std_err = CreatePipe,
               std_in = CreatePipe
@@ -127,7 +141,6 @@ main = do
         errors <- BSL8.hGetContents herr
         BSL8.hPutStr stderr errors
         exitCode <- waitForProcess procHandle
-        BS8.hPutStrLn stderr "exit code received"
         let responseHeaders = mempty
             exitCodeHttp = exitCodeToHttp exitCode
         respond (responseLBS exitCodeHttp responseHeaders responseBody)
