@@ -1,0 +1,3 @@
+* muhttpd - HTTP with the Unix Philosophy in mind
+
+muhttpd is a very small HTTP server that aims to be composed either via pipes or by calling other programs when requests arrive. Thus, it doesn’t serve static files, it’s a relay.
