@@ -1,5 +1,5 @@
 { mkDerivation, base, bytestring, case-insensitive, http-types
-, optparse-applicative, stdenv, wai, warp
+, optparse-applicative, process, stdenv, wai, warp
 }:
 mkDerivation {
   pname = "muhttpd";
@@ -9,7 +9,7 @@ mkDerivation {
   isExecutable = true;
   executableHaskellDepends = [
     base bytestring case-insensitive http-types optparse-applicative
-    wai warp
+    process wai warp
   ];
   homepage = "https://github.com/plapadoo/muhttpd";
   description = "Small, Unix-philosophy HTTP server";

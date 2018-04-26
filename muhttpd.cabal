@@ -27,5 +27,11 @@ executable muhttpd
                      , http-types
                      , bytestring
                      , case-insensitive
+                     , process
   hs-source-dirs:      src
   default-language:    Haskell2010
+  ghc-options: -Wall
+               -Wcompat
+               -Wincomplete-record-updates
+               -Wincomplete-uni-patterns
+               -Wredundant-constraints
