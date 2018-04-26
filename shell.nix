@@ -4,8 +4,8 @@ let
 
   inherit (nixpkgs) pkgs;
 
-  f = { mkDerivation, base, bytestring, http-types
-      , optparse-applicative, stdenv, wai, warp
+  f = { mkDerivation, base, bytestring, case-insensitive
+      , http-types, optparse-applicative, stdenv, wai, warp
       }:
       mkDerivation {
         pname = "muhttpd";
@@ -14,7 +14,8 @@ let
         isLibrary = false;
         isExecutable = true;
         executableHaskellDepends = [
-          base bytestring http-types optparse-applicative wai warp
+          base bytestring case-insensitive http-types optparse-applicative
+          wai warp
         ];
         homepage = "https://github.com/plapadoo/muhttpd";
         description = "Small, Unix-philosophy HTTP server";
