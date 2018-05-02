@@ -36,7 +36,7 @@ import           Options.Applicative        (Parser, auto, execParser, fullDesc,
                                              switch, value, (<**>))
 import           Prelude                    ()
 import           System.Exit                (ExitCode (..))
-import           System.IO                  (IO, stderr)
+import           System.IO                  (IO, hFlush, stderr)
 import           System.Process             (CreateProcess,
                                              StdStream (CreatePipe),
                                              createProcess, proc, std_err,
@@ -135,6 +135,7 @@ main = do
               }
         (Just hin, Just hout, Just herr, procHandle) <- createProcess processParams
         BS8.hPutStrLn hin output
+        hFlush hin
         responseBody <- BSL8.hGetContents hout
         errors <- BSL8.hGetContents herr
         BSL8.hPutStr stderr errors
