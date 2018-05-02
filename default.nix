@@ -1,17 +1,5 @@
-{ mkDerivation, base, bytestring, case-insensitive, http-types
-, optparse-applicative, process, stdenv, wai, warp
-}:
-mkDerivation {
-  pname = "muhttpd";
-  version = "1.0";
-  src = ./.;
-  isLibrary = false;
-  isExecutable = true;
-  executableHaskellDepends = [
-    base bytestring case-insensitive http-types optparse-applicative
-    process wai warp
-  ];
-  homepage = "https://github.com/plapadoo/muhttpd";
-  description = "Small, Unix-philosophy HTTP server";
-  license = stdenv.lib.licenses.gpl3;
-}
+{ pkgs ? import <nixpkgs> {} }:
+let
+  drv = pkgs.haskellPackages.callCabal2nix "muhttpd" ./. {};
+in
+  drv
