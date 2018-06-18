@@ -20,7 +20,7 @@ executable muhttpd
   main-is:             Main.hs
   -- other-modules:
   -- other-extensions:
-  build-depends:       base >=4.10 && <4.11
+  build-depends:       base >=4.10
                      , warp
                      , optparse-applicative
                      , wai
